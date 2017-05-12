@@ -14,11 +14,12 @@ import com.google.gson.Gson;
 import de.philipp1994.lunch.common.ILunchMenuProvider;
 import de.philipp1994.lunch.common.LunchMenu;
 import de.philipp1994.lunch.common.LunchProviderException;
-import mri.MRILunchMenuProvider;
+import de.philipp1994.lunch.mri.MRILunchMenuProvider;
+import de.philipp1994.lunch.pizzahaus.PizzaHausLunchMenuProvider;
 
 public class LunchMenuServlet extends HttpServlet {
 	
-	private final static ILunchMenuProvider[] PROVIDER = new ILunchMenuProvider[]{ new MRILunchMenuProvider() };
+	private final static ILunchMenuProvider[] PROVIDER = new ILunchMenuProvider[]{ new MRILunchMenuProvider(), new PizzaHausLunchMenuProvider() };
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

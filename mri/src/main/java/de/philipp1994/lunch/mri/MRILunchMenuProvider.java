@@ -1,4 +1,4 @@
-package mri;
+package de.philipp1994.lunch.mri;
 
 import java.io.DataInputStream;
 import java.io.IOException;
