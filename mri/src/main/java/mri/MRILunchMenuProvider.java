@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,10 +16,12 @@ import de.philipp1994.lunch.common.AbstractLunchMenuProvider;
 import de.philipp1994.lunch.common.LunchMenu;
 import de.philipp1994.lunch.common.LunchMenuItem;
 import de.philipp1994.lunch.common.LunchProviderException;
+import de.philipp1994.lunch.common.tools.Cache;
 
 public class MRILunchMenuProvider extends AbstractLunchMenuProvider {
 
 	private static final URI URL;
+	private static final Map<LocalDate, LunchMenu> cache = Cache.getSynchronizedCache(7);
 
 	static {
 		URI t = null;
@@ -33,6 +36,11 @@ public class MRILunchMenuProvider extends AbstractLunchMenuProvider {
 
 	@Override
 	public LunchMenu getMenu(final LocalDate date) throws IOException, LunchProviderException {
+		
+		if(cache.containsKey(date)){
+			return cache.get(date);
+		}
+		
 		LunchMenu menu = new LunchMenu();
 		
 		DataInputStream in = new DataInputStream(URL.toURL().openStream());
@@ -55,6 +63,8 @@ public class MRILunchMenuProvider extends AbstractLunchMenuProvider {
 		if(menu.isEmpty()) {
 			throw LunchProviderException.LUNCH_MENU_NOT_AVAILABLE_YET;
 		}
+		
+		cache.put(date, menu);
 		
 		return menu;
 	}
