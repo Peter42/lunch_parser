@@ -1,0 +1,17 @@
+body {
+	font-family: Calibri, Arial;
+	background-color: #EEE;
+}
+
+.cantine {
+	margin-bottom: 1rem;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+	padding: 16px;
+	min-width: 300px;
+	width: 50%;
+	background-color: white;
+}
+
+.lunchitem:not(:last-child) {
+	margin-bottom: .5rem;
+}
