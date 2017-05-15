@@ -1,0 +1,22 @@
+Copyright 2017 Philipp Stehle
+
+Licensed under The MIT License
+
+This project includes:
+
+  Apache Commons CLI under Apache License, Version 2.0
+  Commons for Lunch Parser under The MIT License
+  Gson under Apache 2.0
+  Java Servlet API under CDDL 1.1 or GPL2 w/ CPE
+  Jetty :: Http Utility under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
+  Jetty :: IO Utility under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
+  Jetty :: Security under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
+  Jetty :: Server Core under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
+  Jetty :: Servlet Handling under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
+  Jetty :: Utilities under Apache Software License - Version 2.0 or Eclipse Public License - Version 1.0
+  jsoup Java HTML Parser under The MIT License
+  Lunch Menu Provider for MRI under The MIT License
+  Lunch Parser Parent under The MIT License
+  Lunch Webservice under The MIT License
+  Pizza Haus Launch Menu Provider under The MIT License
+
