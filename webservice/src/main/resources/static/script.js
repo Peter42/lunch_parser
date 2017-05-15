@@ -18,8 +18,14 @@ function renderCantine(cantine, parentDiv) {
 	var div = document.createElement("div");
 	div.className = "cantine";
 	parentDiv.appendChild(div);
-	for (var i = 0; i < cantine.length; ++i) {
-		renderLunchItem(cantine[i], div);
+	
+	var name = document.createElement("div");
+	name.className = "cantinename";
+	name.innerText = cantine.name;
+	div.appendChild(name);
+	
+	for (var i = 0; i < cantine.lunchItems.length; ++i) {
+		renderLunchItem(cantine.lunchItems[i], div);
 	}
 }
 

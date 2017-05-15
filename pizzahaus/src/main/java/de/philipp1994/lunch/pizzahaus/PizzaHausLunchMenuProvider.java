@@ -1,9 +1,7 @@
 package de.philipp1994.lunch.pizzahaus;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 import de.philipp1994.lunch.common.AbstractLunchMenuProvider;
@@ -29,32 +27,32 @@ public class PizzaHausLunchMenuProvider extends AbstractLunchMenuProvider {
 	@Override
 	public LunchMenu getMenu(final LocalDate date) throws LunchProviderException {
 		
-		LunchMenu menu = new LunchMenu();
+		LunchMenu menu = new LunchMenu("Pizzahaus");
 		
 		switch(date.getDayOfWeek()) {
 		case MONDAY:
-			menu.add(new LunchMenuItem("Pasta con Rocola, insalata verde"));
-			menu.add(new LunchMenuItem("Scaloppina al Vino Bianco, Pommes, insalata verde"));
+			menu.addLunchItem(new LunchMenuItem("Pasta con Rocola, insalata verde"));
+			menu.addLunchItem(new LunchMenuItem("Scaloppina al Vino Bianco, Pommes, insalata verde"));
 			break;
 
 		case TUESDAY:
-			menu.add(new LunchMenuItem("Agnolotti Ricotta e Spinaci, insalata verde"));
-			menu.add(new LunchMenuItem("Scaloppina con Mozzarella, Pommes, insalata verde"));
+			menu.addLunchItem(new LunchMenuItem("Agnolotti Ricotta e Spinaci, insalata verde"));
+			menu.addLunchItem(new LunchMenuItem("Scaloppina con Mozzarella, Pommes, insalata verde"));
 			break;
 
 		case WEDNESDAY:
-			menu.add(new LunchMenuItem("Pasta al Forno, insalata verde"));
-			menu.add(new LunchMenuItem("Scaloppina al Formaggio, Pommes, insalata verde"));
+			menu.addLunchItem(new LunchMenuItem("Pasta al Forno, insalata verde"));
+			menu.addLunchItem(new LunchMenuItem("Scaloppina al Formaggio, Pommes, insalata verde"));
 			break;
 
 		case THURSDAY:
-			menu.add(new LunchMenuItem("Pasta con Polpette, insalata verde"));
-			menu.add(new LunchMenuItem("Maiale alla Griglia, Pommes, insalata verde"));
+			menu.addLunchItem(new LunchMenuItem("Pasta con Polpette, insalata verde"));
+			menu.addLunchItem(new LunchMenuItem("Maiale alla Griglia, Pommes, insalata verde"));
 			break;
 
 		case FRIDAY:
-			menu.add(new LunchMenuItem("Pasta al Salmone, insalata verde"));
-			menu.add(new LunchMenuItem("Kabeljaufilet, Pommes, insalata verde"));
+			menu.addLunchItem(new LunchMenuItem("Pasta al Salmone, insalata verde"));
+			menu.addLunchItem(new LunchMenuItem("Kabeljaufilet, Pommes, insalata verde"));
 			break;
 			
 		default:

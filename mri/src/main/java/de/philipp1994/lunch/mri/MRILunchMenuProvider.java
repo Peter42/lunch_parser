@@ -41,7 +41,7 @@ public class MRILunchMenuProvider extends AbstractLunchMenuProvider {
 			return cache.get(date);
 		}
 		
-		LunchMenu menu = new LunchMenu();
+		LunchMenu menu = new LunchMenu("MRI");
 		
 		DataInputStream in = new DataInputStream(URL.toURL().openStream());
 
@@ -55,12 +55,12 @@ public class MRILunchMenuProvider extends AbstractLunchMenuProvider {
 					for (Element element : node.child(2).children()) {
 						if (!element.text().startsWith("Suppe & Dessert")) {
 							Element p = element.getElementsByTag("p").first();
-							menu.add(new LunchMenuItem(p.toString().replaceAll("<su[bp]>[^<]*</su[bp]>", " ").replaceAll("</?p>", "").replaceAll(" +", " ")));
+							menu.addLunchItem(new LunchMenuItem(p.toString().replaceAll("<su[bp]>[^<]*</su[bp]>", " ").replaceAll("</?p>", "").replaceAll(" +", " ")));
 						}
 					}
 				});
 		
-		if(menu.isEmpty()) {
+		if(menu.getLunchItems().isEmpty()) {
 			throw LunchProviderException.LUNCH_MENU_NOT_AVAILABLE_YET;
 		}
 		

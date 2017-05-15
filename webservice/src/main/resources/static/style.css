@@ -12,22 +12,18 @@ body {
 	background-color: white;
 }
 
-.lunchitem
-:not
- 
-(
-:last-child
- 
-)
-{
-margin-bottom
-:
- 
-.5rem
-;
-
-
+.cantinename {
+	text-align: left;
+	font-size: larger;
+	font-weight: bold;
+	padding-bottom: .5rem;
 }
+
+.lunchitem:not(:last-child)
+{
+	margin-bottom: .5rem;
+}
+
 #forkongithub a {
 	background: #000;
 	color: #fff;
