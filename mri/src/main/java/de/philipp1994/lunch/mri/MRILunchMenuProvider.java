@@ -53,7 +53,7 @@ public class MRILunchMenuProvider extends AbstractLunchMenuProvider {
 				})
 				.forEach(node -> {
 					for (Element element : node.child(2).children()) {
-						if (!element.equals(node.child(2).children().last())) {
+						if (!element.text().startsWith("Suppe & Dessert")) {
 							Element p = element.getElementsByTag("p").first();
 							menu.add(new LunchMenuItem(p.toString().replaceAll("<su[bp]>[^<]*</su[bp]>", " ").replaceAll("</?p>", "").replaceAll(" +", " ")));
 						}
