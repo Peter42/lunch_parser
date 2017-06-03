@@ -12,9 +12,18 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
+
 	<artifactId>webservice</artifactId>
 	<name>Lunch Webservice</name>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>de.philipp1994.lunchparser</groupId>
