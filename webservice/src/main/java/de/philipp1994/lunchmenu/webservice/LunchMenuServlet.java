@@ -1,6 +1,7 @@
 package de.philipp1994.lunchmenu.webservice;
 
 import java.io.IOException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -52,8 +53,10 @@ public class LunchMenuServlet extends HttpServlet {
 		result.generationTime = LocalDateTime.now();
 		
 		if(LocalDateTime.now().getHour() >= 15 ) {
-			// TODO: skip the weekend
 			result.menuForDay = result.menuForDay.plusDays(1);
+		}
+		if(result.menuForDay.getDayOfWeek().getValue() > DayOfWeek.FRIDAY.getValue()) {
+			result.menuForDay = result.menuForDay.plusDays( 1 + DayOfWeek.SUNDAY.getValue() - result.menuForDay.getDayOfWeek().getValue());
 		}
 		
 		for(int i = 0; i < PROVIDER.length; ++i ) {
