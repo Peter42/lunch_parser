@@ -1,0 +1,7 @@
+body {
+	align-content: center;
+	background-image: url('noConnection.jpg');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-position: center;
+}

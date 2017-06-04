@@ -1,0 +1,30 @@
+{
+	"name": "Lunch Menu",
+	"short_name": "Lunch Menu",
+	"start_url": "./",
+	"scope": "./",
+	"display": "standalone",
+	"background_color": "transparent",
+	"icons": [
+		{
+			"src": "icons/48.png",
+			"sizes": "48x48"
+		},
+		{
+			"src": "icons/72.png",
+			"sizes": "72x72"
+		},
+		{
+			"src": "icons/96.png",
+			"sizes": "96x96"
+		},
+		{
+			"src": "icons/144.png",
+			"sizes": "144x144"
+		},
+		{
+			"src": "icons/192.png",
+			"sizes": "192x192"
+		}
+	]
+}
