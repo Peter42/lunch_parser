@@ -16,6 +16,7 @@ import com.google.gson.GsonBuilder;
 import de.philipp1994.lunch.common.ILunchMenuProvider;
 import de.philipp1994.lunch.common.LunchMenu;
 import de.philipp1994.lunch.common.LunchProviderException;
+import de.philipp1994.lunch.kit.KITLunchMenuProvider;
 import de.philipp1994.lunch.mri.MRILunchMenuProvider;
 import de.philipp1994.lunch.pizzahaus.PizzaHausLunchMenuProvider;
 import de.philipp1994.lunchmenu.webservice.adapter.LocalDateAdapter;
@@ -42,7 +43,11 @@ public class LunchMenuServlet extends HttpServlet {
 		LocalDate menuForDay;
 	}
 	
-	private final static ILunchMenuProvider[] PROVIDER = new ILunchMenuProvider[]{ new MRILunchMenuProvider(), new PizzaHausLunchMenuProvider() };
+	private final static ILunchMenuProvider[] PROVIDER = new ILunchMenuProvider[]{
+			new MRILunchMenuProvider(),
+			new KITLunchMenuProvider(),
+			new PizzaHausLunchMenuProvider(),
+	};
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

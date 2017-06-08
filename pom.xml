@@ -46,6 +46,7 @@
 		<module>mri</module>
 		<module>webservice</module>
 		<module>pizzahaus</module>
+		<module>kit-mensa</module>
 	</modules>
 
 	<properties>
