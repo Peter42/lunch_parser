@@ -38,3 +38,8 @@ The Webservice returns a JSON which looks similar to this one:
 }
 ```
 timestamps (`generationTime` and `menuForDay`) use unixtime format.
+
+# Icon
+Download Icon here: https://materialdesignicons.com/icon/food
+
+Use Android Asset Studio to edit: https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html#foreground.type=image&foreground.space.trim=1&foreground.space.pad=0.25&foreColor=rgba(96%2C%20125%2C%20139%2C%200)&backColor=rgb(204%2C%20204%2C%20204)&crop=0&backgroundShape=hrect&effects=none&name=ic_launcher
