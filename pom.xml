@@ -4,7 +4,7 @@
 
 	<groupId>de.philipp1994.lunchparser</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Lunch Parser Parent</name>
 	<url>https://github.com/Peter42/lunch_parser/</url>
