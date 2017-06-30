@@ -1,7 +1,5 @@
 package de.philipp1994.lunch.pizzahaus;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 
 import de.philipp1994.lunch.common.ILunchMenuProvider;
@@ -10,19 +8,6 @@ import de.philipp1994.lunch.common.LunchMenuItem;
 import de.philipp1994.lunch.common.LunchProviderException;
 
 public class PizzaHausLunchMenuProvider implements ILunchMenuProvider {
-
-	private static final URI URL;
-
-	static {
-		URI t = null;
-		try {
-			t = new URI("http://www.casinocatering.de/speiseplan/max-rubner-institut");
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		} finally {
-			URL = t;
-		}
-	}
 
 	@Override
 	public LunchMenu getMenu(final LocalDate date) throws LunchProviderException {
