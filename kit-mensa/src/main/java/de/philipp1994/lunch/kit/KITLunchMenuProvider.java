@@ -15,13 +15,13 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import de.philipp1994.lunch.common.AbstractLunchMenuProvider;
+import de.philipp1994.lunch.common.ILunchMenuProvider;
 import de.philipp1994.lunch.common.LunchMenu;
 import de.philipp1994.lunch.common.LunchMenuItem;
 import de.philipp1994.lunch.common.LunchProviderException;
 import de.philipp1994.lunch.common.tools.Cache;
 
-public class KITLunchMenuProvider extends AbstractLunchMenuProvider {
+public class KITLunchMenuProvider implements ILunchMenuProvider {
 
 	private static final Map<LocalDate, LunchMenu> cache = Cache.getSynchronizedCache(7);
 	private static final String MENSA_NAME = "KIT Mensa";

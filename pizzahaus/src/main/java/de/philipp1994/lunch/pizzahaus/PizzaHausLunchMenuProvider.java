@@ -4,12 +4,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 
-import de.philipp1994.lunch.common.AbstractLunchMenuProvider;
+import de.philipp1994.lunch.common.ILunchMenuProvider;
 import de.philipp1994.lunch.common.LunchMenu;
 import de.philipp1994.lunch.common.LunchMenuItem;
 import de.philipp1994.lunch.common.LunchProviderException;
 
-public class PizzaHausLunchMenuProvider extends AbstractLunchMenuProvider {
+public class PizzaHausLunchMenuProvider implements ILunchMenuProvider {
 
 	private static final URI URL;
 

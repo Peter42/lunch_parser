@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 public interface ILunchMenuProvider {
-	public LunchMenu getMenu() throws IOException, LunchProviderException;
+	public default LunchMenu getMenu() throws IOException, LunchProviderException {
+		return this.getMenu(LocalDate.now());
+	}
+
 	public LunchMenu getMenu(LocalDate date) throws IOException, LunchProviderException;
 }

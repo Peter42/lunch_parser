@@ -14,13 +14,13 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import de.philipp1994.lunch.common.AbstractLunchMenuProvider;
+import de.philipp1994.lunch.common.ILunchMenuProvider;
 import de.philipp1994.lunch.common.LunchMenu;
 import de.philipp1994.lunch.common.LunchMenuItem;
 import de.philipp1994.lunch.common.LunchProviderException;
 import de.philipp1994.lunch.common.tools.Cache;
 
-public class MRILunchMenuProvider extends AbstractLunchMenuProvider {
+public class MRILunchMenuProvider implements ILunchMenuProvider {
 
 	private static final URI URL;
 	private static final Map<LocalDate, LunchMenu> cache = Cache.getSynchronizedCache(7);
