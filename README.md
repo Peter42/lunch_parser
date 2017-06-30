@@ -12,36 +12,38 @@ The API Levels (currently there is only one) will keep their documented scheme (
 The Webservice returns a JSON which looks similar to this one:
 ```json
 {
-	"menus": [
-    	{
-    		"name": "MRI",
-    		"lunchItems": [
-        		{
-        			"itemName": "Gegrillter Hirtenkäse mit Balkangarnitur und Bulgur",
-					"price" : -1
-        		}, {
-        			"itemName": "Ochsenbrust mit Grüner Frankfurter Sauce und Bratkartoffel",
-					"price" : -1
-        		}
-    		]
-    	}, {
-    		"name": "Pizzahaus",
-    		"lunchItems": [
-        		{
-        			"itemName": "Pasta con Polpette, insalata verde",
-					"price" : 5.5
-        		}, {
-        			"itemName": "Maiale alla Griglia, Pommes, insalata verde",
-					"price" : 8
-        		}
-    		]
-    	}
-	],
-	"generationTime": 1496920099,
-	"menuForDay": 1496880000
+    "menus": [
+        {
+            "name": "MRI",
+            "lunchItems": [
+                {
+                    "itemName": "Gegrillter Hirtenkäse mit Balkangarnitur und Bulgur",
+                    "price" : -1
+                }, {
+                    "itemName": "Ochsenbrust mit Grüner Frankfurter Sauce und Bratkartoffel",
+                    "price" : -1
+                }
+            ]
+        }, {
+            "name": "Pizzahaus",
+            "lunchItems": [
+                {
+                    "itemName": "Pasta con Polpette, insalata verde",
+                    "price" : 5.5
+                }, {
+                    "itemName": "Maiale alla Griglia, Pommes, insalata verde",
+                    "price" : 8
+                }
+            ]
+        }
+    ],
+    "generationTime": 1496920099,
+    "menuForDay": 1496880000
 }
 ```
 timestamps (`generationTime` and `menuForDay`) use unixtime format.
+
+price is in EUR, -1 => price unkown.
 
 # Icon
 Download Icon here: https://materialdesignicons.com/icon/food
