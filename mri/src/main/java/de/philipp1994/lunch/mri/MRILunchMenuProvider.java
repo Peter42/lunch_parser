@@ -59,7 +59,10 @@ public class MRILunchMenuProvider extends AbstractLunchMenuProvider {
 					for (Element element : node.child(2).children()) {
 						if (distance.apply(SUPPE_AND_DESSERT, element.text().substring(0, SUPPE_AND_DESSERT.length()-1)) > 3) {
 							Element p = element.getElementsByTag("p").first();
-							menu.addLunchItem(new LunchMenuItem(p.toString().replaceAll("<su[bp]>[^<]*</su[bp]>", " ").replaceAll("</?p>", "").replaceAll(" +", " ")));
+							menu.addLunchItem(new LunchMenuItem(p.toString()
+									.replaceAll("<su[bp]>[^<]*</su[bp]>", " ")
+									.replaceAll("</?p>", "")
+									.replaceAll(" +", " "), LunchMenuItem.PRICE_UNKOWN));
 						}
 					}
 				});

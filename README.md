@@ -17,18 +17,22 @@ The Webservice returns a JSON which looks similar to this one:
     		"name": "MRI",
     		"lunchItems": [
         		{
-        			"itemName": "Gegrillter Hirtenkäse mit Balkangarnitur und Bulgur"
+        			"itemName": "Gegrillter Hirtenkäse mit Balkangarnitur und Bulgur",
+					"price" : -1
         		}, {
-        			"itemName": "Ochsenbrust mit Grüner Frankfurter Sauce und Bratkartoffel"
+        			"itemName": "Ochsenbrust mit Grüner Frankfurter Sauce und Bratkartoffel",
+					"price" : -1
         		}
     		]
     	}, {
     		"name": "Pizzahaus",
     		"lunchItems": [
         		{
-        			"itemName": "Pasta con Polpette, insalata verde"
+        			"itemName": "Pasta con Polpette, insalata verde",
+					"price" : 5.5
         		}, {
-        			"itemName": "Maiale alla Griglia, Pommes, insalata verde"
+        			"itemName": "Maiale alla Griglia, Pommes, insalata verde",
+					"price" : 8
         		}
     		]
     	}

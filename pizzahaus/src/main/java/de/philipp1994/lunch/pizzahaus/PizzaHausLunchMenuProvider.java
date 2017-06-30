@@ -31,28 +31,28 @@ public class PizzaHausLunchMenuProvider extends AbstractLunchMenuProvider {
 		
 		switch(date.getDayOfWeek()) {
 		case MONDAY:
-			menu.addLunchItem(new LunchMenuItem("Pasta con Rocola, insalata verde"));
-			menu.addLunchItem(new LunchMenuItem("Scaloppina al Vino Bianco, Pommes, insalata verde"));
+			menu.addLunchItem(new LunchMenuItem("Pasta con Rocola, insalata verde", 5.50));
+			menu.addLunchItem(new LunchMenuItem("Scaloppina al Vino Bianco, Pommes, insalata verde", 8.00));
 			break;
 
 		case TUESDAY:
-			menu.addLunchItem(new LunchMenuItem("Agnolotti Ricotta e Spinaci, insalata verde"));
-			menu.addLunchItem(new LunchMenuItem("Scaloppina con Mozzarella, Pommes, insalata verde"));
+			menu.addLunchItem(new LunchMenuItem("Agnolotti Ricotta e Spinaci, insalata verde", 5.50));
+			menu.addLunchItem(new LunchMenuItem("Scaloppina con Mozzarella, Pommes, insalata verde", 8.00));
 			break;
 
 		case WEDNESDAY:
-			menu.addLunchItem(new LunchMenuItem("Pasta al Forno, insalata verde"));
-			menu.addLunchItem(new LunchMenuItem("Scaloppina al Formaggio, Pommes, insalata verde"));
+			menu.addLunchItem(new LunchMenuItem("Pasta al Forno, insalata verde", 5.50));
+			menu.addLunchItem(new LunchMenuItem("Scaloppina al Formaggio, Pommes, insalata verde", 8.00));
 			break;
 
 		case THURSDAY:
-			menu.addLunchItem(new LunchMenuItem("Pasta con Polpette, insalata verde"));
-			menu.addLunchItem(new LunchMenuItem("Maiale alla Griglia, Pommes, insalata verde"));
+			menu.addLunchItem(new LunchMenuItem("Pasta con Polpette, insalata verde", 5.50));
+			menu.addLunchItem(new LunchMenuItem("Maiale alla Griglia, Pommes, insalata verde", 8.00));
 			break;
 
 		case FRIDAY:
-			menu.addLunchItem(new LunchMenuItem("Pasta al Salmone, insalata verde"));
-			menu.addLunchItem(new LunchMenuItem("Kabeljaufilet, Pommes, insalata verde"));
+			menu.addLunchItem(new LunchMenuItem("Pasta al Salmone, insalata verde", 5.50));
+			menu.addLunchItem(new LunchMenuItem("Kabeljaufilet, Pommes, insalata verde", 8.00));
 			break;
 			
 		default:

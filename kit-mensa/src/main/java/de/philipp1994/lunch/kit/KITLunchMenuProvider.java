@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
@@ -70,24 +71,21 @@ public class KITLunchMenuProvider extends AbstractLunchMenuProvider {
 			
 			lines.entrySet().stream().flatMap(e -> {
 				return e.getValue().children().stream()
-						.filter(tr -> {
-							String text = null;
+						.map(tr -> {
 							try {
-								text = tr.child(2).text().replaceAll("[^0-9,]", "").replace(",", ".").trim();
+								double price = parsePrice(tr.child(2).text());
+								if(price <= 1.5) {
+									return null;
+								}
+								String name = tr.child(1).text().replaceAll("\\([^\\)]*\\)", "").trim();
+								return new LunchMenuItem(name, price);
 							}
 							catch(IndexOutOfBoundsException ex) {
 								// if line is closed
-								return false;
+								return null;
 							}
-							if(text.length() == 0) {
-								return false;
-							}
-							return Double.parseDouble(text) > 1.5;
 						})
-						.map(tr -> tr.child(1).text())
-						.map(name -> name.replaceAll("\\([^\\)]*\\)", "").trim())
-						.map(name -> new LunchMenuItem(name));
-				
+						.filter(Objects::nonNull);
 			}).forEach(menu::addLunchItem);
 			
 			return menu;
@@ -115,7 +113,7 @@ public class KITLunchMenuProvider extends AbstractLunchMenuProvider {
 			if(text.startsWith("Linie")) {
 				currentLine = text.substring(0, text.length() - 1);
 			} else {
-				menu.addLunchItem(new LunchMenuItem(e.child(0).text()));
+				menu.addLunchItem(new LunchMenuItem(e.child(0).text(), parsePrice(e.child(2).text())));
 			}
 		}
 		
@@ -126,5 +124,15 @@ public class KITLunchMenuProvider extends AbstractLunchMenuProvider {
 		cache.put(date, menu);
 		
 		return menu;
+	}
+	
+	private double parsePrice(String price) {
+		price = price.replaceAll("[^0-9,]", "").replace(",", ".").trim();
+		if(price.length() == 0) {
+			return LunchMenuItem.PRICE_UNKOWN;
+		}
+		
+		return Double.parseDouble(price);
+		
 	}
 }
