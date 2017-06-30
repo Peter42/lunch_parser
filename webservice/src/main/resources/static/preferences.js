@@ -19,12 +19,15 @@ function renderPref(pref) {
 	switch(pref.type) {
 	case "boolean":
 		var checked = getBoolean(pref.key, pref.defaultValue) ? "checked " : "";
-		div.innerHTML = "<input " + checked + " onchange=\"updatedBoolean('" + pref.key + "', this.checked)\" type=\"checkbox\">" + pref.name;
+		div.innerHTML = "<input " + checked + " type=\"checkbox\">" + pref.name;
+		div.firstElementChild.onchange = function() {
+			updatedBoolean(pref.key, this.checked);
+		};
 		break;
 		
 	case "enum":
 		var selectedValue = getEnum(pref.key, pref.defaultValue);
-		var innerHTML = pref.name + ": <select onchange=\"updatedEnum('" + pref.key + "', this.selectedOptions[0].value)\">";
+		var innerHTML = pref.name + ": <select>";
 		for(var key in pref.values){
 			if(!pref.values.hasOwnProperty(key)) continue;
 			var selected = selectedValue === key ? " selected" : "";
@@ -32,6 +35,9 @@ function renderPref(pref) {
 		}
 		innerHTML += "</select>";
 		div.innerHTML= innerHTML;
+		div.firstElementChild.onchange = function() {
+			updatedEnum(pref.key, this.value);
+		};
 		break;
 		
 	default:
