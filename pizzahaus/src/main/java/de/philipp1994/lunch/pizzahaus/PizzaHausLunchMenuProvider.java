@@ -1,18 +1,22 @@
 package de.philipp1994.lunch.pizzahaus;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 import de.philipp1994.lunch.common.ILunchMenuProvider;
 import de.philipp1994.lunch.common.LunchMenu;
 import de.philipp1994.lunch.common.LunchMenuItem;
 import de.philipp1994.lunch.common.LunchProviderException;
+import de.philipp1994.lunch.common.prefs.IUserPreferences;
 
 public class PizzaHausLunchMenuProvider implements ILunchMenuProvider {
 
 	@Override
-	public LunchMenu getMenu(final LocalDate date) throws LunchProviderException {
+	public List<LunchMenu> getMenu(final LocalDate date, final IUserPreferences preferences) throws LunchProviderException {
 		
-		LunchMenu menu = new LunchMenu("Pizzahaus");
+		LunchMenu menu = new LunchMenu("Pizzahaus", this.getUUID());
 		
 		switch(date.getDayOfWeek()) {
 		case MONDAY:
@@ -44,7 +48,17 @@ public class PizzaHausLunchMenuProvider implements ILunchMenuProvider {
 			throw LunchProviderException.NO_LUNCH_TODAY;
 		}
 		
-		return menu;
+		return Collections.singletonList(menu);
 	}
 
+	@Override
+	public UUID getUUID() {
+		return UUID.fromString("3f65d5f0-adb9-476c-b4a4-11069927b375");
+	}
+
+	@Override
+	public String getName() {
+		return "Pizzahaus";
+	}
+	
 }

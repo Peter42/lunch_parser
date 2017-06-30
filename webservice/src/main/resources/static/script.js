@@ -5,6 +5,7 @@ xhttp.onreadystatechange = function() {
 	}
 };
 xhttp.open("GET", "./api/v1/", true);
+xhttp.setRequestHeader("X-User-Preferences", btoa(JSON.stringify(localStorage)));
 xhttp.send();
 
 function unixToString(unix, includeTime) {

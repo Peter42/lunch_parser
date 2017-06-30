@@ -7,8 +7,14 @@ import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
@@ -19,12 +25,32 @@ import de.philipp1994.lunch.common.ILunchMenuProvider;
 import de.philipp1994.lunch.common.LunchMenu;
 import de.philipp1994.lunch.common.LunchMenuItem;
 import de.philipp1994.lunch.common.LunchProviderException;
+import de.philipp1994.lunch.common.prefs.EnumPreference;
+import de.philipp1994.lunch.common.prefs.IUserPreferences;
+import de.philipp1994.lunch.common.prefs.Preference;
 import de.philipp1994.lunch.common.tools.Cache;
 
 public class KITLunchMenuProvider implements ILunchMenuProvider {
 
-	private static final Map<LocalDate, LunchMenu> cache = Cache.getSynchronizedCache(7);
+	private static final Map<LocalDate, Map<String, List<LunchMenuItem>>> cache = Cache.getSynchronizedCache(7);
 	private static final String MENSA_NAME = "KIT Mensa";
+	
+	private static final EnumPreference PREF_DISPLAY_MODE;
+	private static final UUID KIT_MENSA_UUID =  UUID.fromString("997c3f16-3801-417f-88cb-50ab7f6cd8d1");;
+	static {
+		Map<String, String> displayModes = new HashMap<>();
+		displayModes.put("1","All-in-one");
+		displayModes.put("2","L6 Update separate");
+		displayModes.put("n","Every Line separate");
+		PREF_DISPLAY_MODE = new EnumPreference("KIT Mensa Displaymode", KIT_MENSA_UUID + ".displaymode", displayModes, "1");
+	}
+
+	@Override
+	public List<Preference<?>> getPreferences() {
+		List<Preference<?>> prefs = new LinkedList<>();
+		prefs.add(PREF_DISPLAY_MODE);
+		return prefs;
+	}
 	
 	private static URI getURI(LocalDate date) throws IOException {
 		try {
@@ -42,16 +68,14 @@ public class KITLunchMenuProvider implements ILunchMenuProvider {
 			throw new IOException(e);
 		}
 	}
-
-	@Override
-	public LunchMenu getMenu(final LocalDate date) throws IOException, LunchProviderException {
-		
+	
+	private Map<String, List<LunchMenuItem>> getMenuForLines(final LocalDate date) throws IOException, LunchProviderException {
 		if(cache.containsKey(date)){
 			return cache.get(date);
 		}
 
 		try {
-			LunchMenu menu = new LunchMenu(MENSA_NAME);
+			Map<String, List<LunchMenuItem>> menu;
 			
 			DataInputStream in = new DataInputStream(getURI(date).toURL().openStream());
 
@@ -69,37 +93,74 @@ public class KITLunchMenuProvider implements ILunchMenuProvider {
 			.filter(tr -> tr.child(0).text().startsWith("L"))
 			.collect(Collectors.toMap(tr -> tr.child(0).text(), tr -> tr.child(1).child(0).child(0)));
 			
-			lines.entrySet().stream().flatMap(e -> {
+			menu = lines.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> {
 				return e.getValue().children().stream()
-						.map(tr -> {
-							try {
-								double price = parsePrice(tr.child(2).text());
-								if(price <= 1.5) {
-									return null;
-								}
-								String name = tr.child(1).text().replaceAll("\\([^\\)]*\\)", "").trim();
-								return new LunchMenuItem(name, price);
-							}
-							catch(IndexOutOfBoundsException ex) {
-								// if line is closed
-								return null;
-							}
-						})
-						.filter(Objects::nonNull);
-			}).forEach(menu::addLunchItem);
+				.map(tr -> {
+					try {
+						double price = parsePrice(tr.child(2).text());
+						if(price <= 1.5) {
+							return null;
+						}
+						String name = tr.child(1).text().replaceAll("\\([^\\)]*\\)", "").trim();
+						return new LunchMenuItem(name, price);
+					}
+					catch(IndexOutOfBoundsException ex) {
+						// if line is closed
+						return null;
+					}
+				})
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList());
+			}));
+			
+			cache.put(date, menu);
 			
 			return menu;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-			return getFallbackMenu(date);
+			return getFallbackMenuForLines(date);
+		}
+	}
+
+	@Override
+	public List<LunchMenu> getMenu(final LocalDate date, final IUserPreferences preferences) throws IOException, LunchProviderException {
+		
+		String displayMode = preferences.getValueOrDefault(PREF_DISPLAY_MODE);
+		
+		Function<Entry<String, ?>, String> classifier;
+
+		if(displayMode.equals("n")) {
+			classifier = e -> " " + e.getKey();
+		}
+		else if(displayMode.equals("2")) {
+			classifier = e -> e.getKey().contains("6") ? " L6 Update" : "";
+		}
+		else {
+			classifier = e -> "";
 		}
 		
+		List<LunchMenu> lunchMenus = new LinkedList<>();
+		
+		getMenuForLines(date).entrySet().stream()
+		.collect(Collectors.groupingBy(classifier, Collectors.mapping(Entry::getValue, Collectors.toList())))
+		.entrySet().stream().collect(Collectors.toMap( e -> e.getKey(),
+				e -> {
+					return e.getValue().stream().flatMap(List::stream).collect(Collectors.toList());
+				}
+		))
+		.entrySet().forEach(e -> {
+			LunchMenu lunchMenu = new LunchMenu(MENSA_NAME + e.getKey(), KIT_MENSA_UUID);
+			e.getValue().forEach(lunchMenu::addLunchItem);
+			lunchMenus.add(lunchMenu);
+		});
+		
+		return lunchMenus;
 	}
 	
-	private LunchMenu getFallbackMenu(final LocalDate date) throws IOException, LunchProviderException {
+	private Map<String, List<LunchMenuItem>> getFallbackMenuForLines(final LocalDate date) throws IOException, LunchProviderException {
 		
-		LunchMenu menu = new LunchMenu(MENSA_NAME);
+		Map<String, List<LunchMenuItem>> menu = new HashMap<>();
 		
 		DataInputStream in = new DataInputStream(getFallbackURI(date).toURL().openStream());
 
@@ -112,12 +173,13 @@ public class KITLunchMenuProvider implements ILunchMenuProvider {
 			String text = e.text();
 			if(text.startsWith("Linie")) {
 				currentLine = text.substring(0, text.length() - 1);
+				menu.put(currentLine, new LinkedList<>());
 			} else {
-				menu.addLunchItem(new LunchMenuItem(e.child(0).text(), parsePrice(e.child(2).text())));
+				menu.get(currentLine).add(new LunchMenuItem(e.child(0).text(), parsePrice(e.child(2).text())));
 			}
 		}
 		
-		if(menu.getLunchItems().isEmpty()) {
+		if(menu.isEmpty()) {
 			throw LunchProviderException.LUNCH_MENU_NOT_AVAILABLE_YET;
 		}
 		
@@ -134,5 +196,15 @@ public class KITLunchMenuProvider implements ILunchMenuProvider {
 		
 		return Double.parseDouble(price);
 		
+	}
+
+	@Override
+	public UUID getUUID() {
+		return KIT_MENSA_UUID;
+	}
+
+	@Override
+	public String getName() {
+		return MENSA_NAME;
 	}
 }

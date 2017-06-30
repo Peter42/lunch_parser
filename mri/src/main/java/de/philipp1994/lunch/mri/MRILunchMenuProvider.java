@@ -6,7 +6,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.text.similarity.EditDistance;
 import org.apache.commons.text.similarity.LevenshteinDistance;
@@ -18,6 +21,7 @@ import de.philipp1994.lunch.common.ILunchMenuProvider;
 import de.philipp1994.lunch.common.LunchMenu;
 import de.philipp1994.lunch.common.LunchMenuItem;
 import de.philipp1994.lunch.common.LunchProviderException;
+import de.philipp1994.lunch.common.prefs.IUserPreferences;
 import de.philipp1994.lunch.common.tools.Cache;
 
 public class MRILunchMenuProvider implements ILunchMenuProvider {
@@ -39,13 +43,13 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 	}
 
 	@Override
-	public LunchMenu getMenu(final LocalDate date) throws IOException, LunchProviderException {
+	public List<LunchMenu> getMenu(final LocalDate date, final IUserPreferences preferences) throws IOException, LunchProviderException {
 		
 		if(cache.containsKey(date)){
-			return cache.get(date);
+			return Collections.singletonList(cache.get(date));
 		}
 		
-		LunchMenu menu = new LunchMenu("MRI");
+		LunchMenu menu = new LunchMenu("MRI", this.getUUID());
 		
 		DataInputStream in = new DataInputStream(URL.toURL().openStream());
 
@@ -73,7 +77,17 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 		
 		cache.put(date, menu);
 		
-		return menu;
+		return Collections.singletonList(menu);
+	}
+
+	@Override
+	public UUID getUUID() {
+		return UUID.fromString("64f56b8d-1fb2-4a22-82b2-0025a3c87433");
+	}
+
+	@Override
+	public String getName() {
+		return "MRI";
 	}
 
 }

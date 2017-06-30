@@ -64,7 +64,7 @@ public class LunchMenuWebserviceLauncher {
 		holderPwd.setInitParameter("resourceBase", "./target/classes/static/");
 
 		ctx.addServlet(holderPwd, "/");
-		ctx.addServlet(LunchMenuServlet.class, "/api/v1/");
+		ctx.addServlet(LunchMenuServlet.class, "/api/v1/*");
 
 		server.setHandler(ctx);
 
