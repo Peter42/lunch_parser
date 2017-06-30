@@ -109,6 +109,9 @@ public class LunchMenuServlet extends HttpServlet {
 	}
 	
 	private IUserPreferences parsePreferences(String header) {
+		if(header == null) {
+			return UserPreferences.EMPTY;
+		}
 		HashMap<String, String> userPreferences = 
 				gson.fromJson(new String(Base64.getDecoder().decode(header.getBytes())), TYPE_HASHMAP_STRING_STRING);
 		

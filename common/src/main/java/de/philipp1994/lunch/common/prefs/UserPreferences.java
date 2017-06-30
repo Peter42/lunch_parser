@@ -6,6 +6,8 @@ import java.util.NoSuchElementException;
 
 public class UserPreferences implements IUserPreferences {
 	
+	public static final UserPreferences EMPTY = new UserPreferences(Collections.emptyMap());
+	
 	private final Map<String, String> preferenceValues;
 	
 	public UserPreferences(Map<String, String> preferenceValues) {
