@@ -19,6 +19,19 @@ body {
 	padding-bottom: .5rem;
 }
 
+.lunchitem {
+	display: flex;
+}
+
+.lunchitemname {
+	text-align: left;
+}
+
+.lunchitemprice {
+	flex-grow: 1;
+	text-align: right;
+}
+
 .lunchitem:not(:last-child)
 {
 	margin-bottom: .5rem;

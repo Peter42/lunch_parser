@@ -62,7 +62,17 @@ function renderCantine(cantine, parentDiv) {
 function renderLunchItem(lunchitem, parentDiv) {
 	var div = document.createElement("div");
 	div.className = "lunchitem";
-	div.innerHTML = lunchitem.itemName;
+
+	var spanName = document.createElement("span");
+	spanName.className = "lunchitemname";
+	spanName.innerHTML = lunchitem.itemName;
+	div.appendChild(spanName);
+
+	var spanPrice = document.createElement("span");
+	spanPrice.className = "lunchitemprice";
+	spanPrice.innerHTML = lunchitem.price == -1.0 ? "Price unknown" : lunchitem.price.toFixed(2);
+	div.appendChild(spanPrice);
+
 	parentDiv.appendChild(div);
 }
 
