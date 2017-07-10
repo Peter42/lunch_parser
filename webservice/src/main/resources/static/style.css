@@ -21,14 +21,22 @@ body {
 
 .lunchitem {
 	display: flex;
+	align-items: flex-end;
 }
 
 .lunchitemname {
 	text-align: left;
 }
 
-.lunchitemprice {
+.lunchitemcomment {
 	flex-grow: 1;
+	text-align: right;
+	white-space: nowrap;
+	color: #999999;
+	margin: 0px 0.5rem;
+}
+
+.lunchitemprice {
 	text-align: right;
 }
 

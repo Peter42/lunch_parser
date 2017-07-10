@@ -68,6 +68,11 @@ function renderLunchItem(lunchitem, parentDiv) {
 	spanName.innerHTML = lunchitem.itemName;
 	div.appendChild(spanName);
 
+	var spanComment = document.createElement("span");
+	spanComment.className = "lunchitemcomment";
+	spanComment.innerHTML = lunchitem.comment != null ? lunchitem.comment : "";
+	div.appendChild(spanComment);
+
 	var spanPrice = document.createElement("span");
 	spanPrice.className = "lunchitemprice";
 	spanPrice.innerHTML = lunchitem.price == -1.0 ? "Price unknown" : lunchitem.price.toFixed(2);
