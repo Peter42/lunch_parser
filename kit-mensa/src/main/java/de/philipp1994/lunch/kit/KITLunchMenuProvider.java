@@ -108,7 +108,7 @@ public class KITLunchMenuProvider implements ILunchMenuProvider {
 							return null;
 						}
 						String name = tr.child(1).text().replaceAll("\\([^\\)]*\\)", "").trim();
-						return new LunchMenuItem(name, price);
+						return new LunchMenuItem(name, price, e.getKey());
 					}
 					catch(IndexOutOfBoundsException ex) {
 						// if line is closed
@@ -181,7 +181,7 @@ public class KITLunchMenuProvider implements ILunchMenuProvider {
 				currentLine = text.substring(0, text.length() - 1);
 				menu.put(currentLine, new LinkedList<>());
 			} else {
-				menu.get(currentLine).add(new LunchMenuItem(e.child(0).text(), parsePrice(e.child(2).text())));
+				menu.get(currentLine).add(new LunchMenuItem(e.child(0).text(), parsePrice(e.child(2).text()), currentLine));
 			}
 		}
 		
