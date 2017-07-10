@@ -10,6 +10,7 @@ import java.time.temporal.IsoFields;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -36,7 +37,10 @@ public class KITLunchMenuProvider implements ILunchMenuProvider {
 	private static final String MENSA_NAME = "KIT Mensa";
 	
 	private static final EnumPreference PREF_DISPLAY_MODE;
-	private static final UUID KIT_MENSA_UUID =  UUID.fromString("997c3f16-3801-417f-88cb-50ab7f6cd8d1");;
+	private static final UUID KIT_MENSA_UUID =  UUID.fromString("997c3f16-3801-417f-88cb-50ab7f6cd8d1");
+
+	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("EE dd.MM.", Locale.GERMANY);
+
 	static {
 		Map<String, String> displayModes = new HashMap<>();
 		displayModes.put("1","All-in-one");
@@ -78,17 +82,19 @@ public class KITLunchMenuProvider implements ILunchMenuProvider {
 			Map<String, List<LunchMenuItem>> menu;
 			
 			DataInputStream in = new DataInputStream(getURI(date).toURL().openStream());
-
 			Document document = Jsoup.parse(in, null, "");
 			
-			LocalDate now = LocalDate.now();
-			int dayOfWeek = date.getDayOfWeek().getValue();
-			if(date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR) == now.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)) {
-				// Lunch Menus of days in the past are hidden.
-				dayOfWeek -= now.getDayOfWeek().getValue();
-			}
-			final int child = 5 + 3 * dayOfWeek;
-			Map<String, Element> lines = document.select("#platocontent > table:nth-child(" + child + ") > tbody > tr").stream()
+			String expectedDateString = FORMATTER.format(date);
+			
+			Element table = document.select("#platocontent > h1").stream()
+					.filter(e -> {
+						return e.text().equals(expectedDateString);
+					})
+					.findAny()
+					.orElseThrow(() -> LunchProviderException.LUNCH_MENU_NOT_AVAILABLE_YET)
+					.nextElementSibling();
+			
+			Map<String, Element> lines = table.select("tbody > tr").stream()
 			.filter(tr -> tr.text().length() > 0)
 			.filter(tr -> tr.child(0).text().startsWith("L"))
 			.collect(Collectors.toMap(tr -> tr.child(0).text(), tr -> tr.child(1).child(0).child(0)));
