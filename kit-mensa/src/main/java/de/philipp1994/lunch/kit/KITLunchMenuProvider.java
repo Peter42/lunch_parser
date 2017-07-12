@@ -30,6 +30,7 @@ import de.philipp1994.lunch.common.prefs.EnumPreference;
 import de.philipp1994.lunch.common.prefs.IUserPreferences;
 import de.philipp1994.lunch.common.prefs.Preference;
 import de.philipp1994.lunch.common.tools.Cache;
+import de.philipp1994.lunch.common.tools.Utils;
 
 public class KITLunchMenuProvider implements ILunchMenuProvider {
 
@@ -103,7 +104,7 @@ public class KITLunchMenuProvider implements ILunchMenuProvider {
 				return e.getValue().children().stream()
 				.map(tr -> {
 					try {
-						double price = parsePrice(tr.child(2).text());
+						double price = Utils.parsePrice(tr.child(2).text());
 						if(price <= 1.5) {
 							return null;
 						}
@@ -181,7 +182,7 @@ public class KITLunchMenuProvider implements ILunchMenuProvider {
 				currentLine = text.substring(0, text.length() - 1);
 				menu.put(currentLine, new LinkedList<>());
 			} else {
-				menu.get(currentLine).add(new LunchMenuItem(e.child(0).text(), parsePrice(e.child(2).text()), currentLine));
+				menu.get(currentLine).add(new LunchMenuItem(e.child(0).text(), Utils.parsePrice(e.child(2).text()), currentLine));
 			}
 		}
 		
@@ -192,16 +193,6 @@ public class KITLunchMenuProvider implements ILunchMenuProvider {
 		cache.put(date, menu);
 		
 		return menu;
-	}
-	
-	private double parsePrice(String price) {
-		price = price.replaceAll("[^0-9,]", "").replace(",", ".").trim();
-		if(price.length() == 0) {
-			return LunchMenuItem.PRICE_UNKOWN;
-		}
-		
-		return Double.parseDouble(price);
-		
 	}
 
 	@Override

@@ -10,30 +10,39 @@ import java.util.List;
 public class OCR {
 	
 	private final Font font;
-	private static final List<Character> chars = new LinkedList<Character>();
+	public static final List<Character> CHARS_STRING = new LinkedList<Character>();
+	public static final List<Character> CHARS_PRICE  = new LinkedList<Character>();
+	private final List<Character>  chars;
 	static {
 		for(char c = 'a'; c <= 'z'; ++c){
-			chars.add(c);
+			CHARS_STRING.add(c);
 		}
 		
 		for(char c = 'A'; c <= 'Z'; ++c){
-			chars.add(c);
+			CHARS_STRING.add(c);
 		}
 		
-		chars.add('Ä');
-		chars.add('ä');
-		chars.add('Ö');
-		chars.add('ä');
-		chars.add('Ü');
-		chars.add('ü');
+		CHARS_STRING.add('Ã„');
+		CHARS_STRING.add('Ã¤');
+		CHARS_STRING.add('Ã–');
+		CHARS_STRING.add('Ã¤');
+		CHARS_STRING.add('Ãœ');
+		CHARS_STRING.add('Ã¼');
 
-		chars.add('-');
-		chars.add(',');
-		chars.add('\'');
+		CHARS_STRING.add('-');
+		CHARS_STRING.add(',');
+		CHARS_STRING.add('\'');
+
+		for(char c = '0'; c <= '9'; ++c){
+			CHARS_PRICE.add(c);
+		}
+		CHARS_PRICE.add('.');
+		CHARS_PRICE.add('â‚¬');
 	}
 	
-	public OCR(Font font, final double SIZE_FAKTOR) {
+	public OCR(Font font, List<Character> chars, final double SIZE_FAKTOR) {
 		this.font = font.deriveFont((float) (28.0f * SIZE_FAKTOR) ).deriveFont(Font.BOLD);
+		this.chars = chars;
 	}
 	
 	public List<String> detect(BufferedImage image) {

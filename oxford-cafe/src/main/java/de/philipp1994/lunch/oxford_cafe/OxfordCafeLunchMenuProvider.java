@@ -31,6 +31,7 @@ import de.philipp1994.lunch.common.LunchProviderException;
 import de.philipp1994.lunch.common.prefs.IUserPreferences;
 import de.philipp1994.lunch.common.prefs.UserPreferences;
 import de.philipp1994.lunch.common.tools.Cache;
+import de.philipp1994.lunch.common.tools.Utils;
 
 public class OxfordCafeLunchMenuProvider implements ILunchMenuProvider {
 	private static final UUID PROVIDER_UUID = UUID.fromString("60fb4548-1eeb-4c40-a46b-641ac82da651");
@@ -89,22 +90,26 @@ public class OxfordCafeLunchMenuProvider implements ILunchMenuProvider {
 		
 		final double SIZE_FAKTOR = inputImage.getHeight() / 2384.0;
 		System.out.println("SIZE_FAKTOR: " + SIZE_FAKTOR);
-		OCR ocr = new OCR(new Font("Abel", 0, 100), SIZE_FAKTOR);
+		OCR stringOCR = new OCR(new Font("Abel", 0, 100), OCR.CHARS_STRING, SIZE_FAKTOR);
+		OCR priceOCR = new OCR(new Font("Abel", 0, 100), OCR.CHARS_PRICE, SIZE_FAKTOR);
 		
-		process(ocr, inputImage, COL[0], ROW[0], 600, 230, SIZE_FAKTOR, now.with(DayOfWeek.MONDAY));
-		process(ocr, inputImage, COL[0], ROW[1], 600, 230, SIZE_FAKTOR, now.with(DayOfWeek.TUESDAY));
-		process(ocr, inputImage, COL[0], ROW[2], 600, 230, SIZE_FAKTOR, now.with(DayOfWeek.WEDNESDAY));
-		process(ocr, inputImage, COL[1], ROW[0], 600, 230, SIZE_FAKTOR, now.with(DayOfWeek.THURSDAY));
-		process(ocr, inputImage, COL[1], ROW[1], 600, 230, SIZE_FAKTOR, now.with(DayOfWeek.FRIDAY));
+		process(stringOCR, priceOCR, inputImage, COL[0], ROW[0], SIZE_FAKTOR, now.with(DayOfWeek.MONDAY));
+		process(stringOCR, priceOCR, inputImage, COL[0], ROW[1], SIZE_FAKTOR, now.with(DayOfWeek.TUESDAY));
+		process(stringOCR, priceOCR, inputImage, COL[0], ROW[2], SIZE_FAKTOR, now.with(DayOfWeek.WEDNESDAY));
+		process(stringOCR, priceOCR, inputImage, COL[1], ROW[0], SIZE_FAKTOR, now.with(DayOfWeek.THURSDAY));
+		process(stringOCR, priceOCR, inputImage, COL[1], ROW[1], SIZE_FAKTOR, now.with(DayOfWeek.FRIDAY));
 	}
 	
-	private void process(OCR ocr, BufferedImage image, int x, int y, int w, int h, final double SIZE_FAKTOR, LocalDate date){
+	private void process(OCR stringOCR, OCR priceOCR, BufferedImage image, int x, int y, final double SIZE_FAKTOR, LocalDate date){
 		LunchMenu menu = new LunchMenu(getName(), getUUID());
+
+		List<String> names  = process(stringOCR, image.getSubimage((int)(x       * SIZE_FAKTOR), (int)(y * SIZE_FAKTOR), (int)(600 * SIZE_FAKTOR), (int)(230 * SIZE_FAKTOR)));
+		List<String> prices = process(priceOCR , image.getSubimage((int)(x + 610 * SIZE_FAKTOR), (int)(y * SIZE_FAKTOR), (int)(100 * SIZE_FAKTOR), (int)(230 * SIZE_FAKTOR)));
 		
-		process(ocr, image.getSubimage((int)(x * SIZE_FAKTOR), (int)(y * SIZE_FAKTOR), (int)(w * SIZE_FAKTOR), (int)(h * SIZE_FAKTOR)))
-		.stream()
-		.map((name) -> new LunchMenuItem(name, LunchMenuItem.PRICE_UNKOWN))
-		.forEach(menu::addLunchItem);
+		boolean priceAvailable = names.size() == prices.size();
+		for(int i = 0; i < names.size(); ++i) {
+			menu.addLunchItem(new LunchMenuItem(names.get(i), priceAvailable ? Utils.parsePrice( prices.get(i) ) : LunchMenuItem.PRICE_UNKOWN ));
+		}
 		
 		cache.put(date, menu);
 	}
