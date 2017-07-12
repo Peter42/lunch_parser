@@ -142,8 +142,12 @@ public class OxfordCafeLunchMenuProvider implements ILunchMenuProvider {
 			return Collections.singletonList(cache.get(date));
 		}
 		else {
-			// FIXME: No lunch today on weekends
-			throw LunchProviderException.LUNCH_MENU_NOT_AVAILABLE_YET;
+			if(Utils.isWeekend(date)) {
+				throw LunchProviderException.LUNCH_MENU_NOT_AVAILABLE_YET;
+			}
+			else {
+				throw LunchProviderException.NO_LUNCH_TODAY;
+			}
 		}
 	}
 
