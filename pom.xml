@@ -47,6 +47,7 @@
 		<module>webservice</module>
 		<module>pizzahaus</module>
 		<module>kit-mensa</module>
+		<module>oxford-cafe</module>
 	</modules>
 
 	<properties>

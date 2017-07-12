@@ -45,6 +45,11 @@
 			<artifactId>pizzahaus</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>de.philipp1994.lunchparser</groupId>
+			<artifactId>oxford-cafe</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>

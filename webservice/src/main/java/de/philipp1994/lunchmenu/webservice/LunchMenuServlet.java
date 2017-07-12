@@ -29,6 +29,7 @@ import de.philipp1994.lunch.common.prefs.Preference;
 import de.philipp1994.lunch.common.prefs.UserPreferences;
 import de.philipp1994.lunch.kit.KITLunchMenuProvider;
 import de.philipp1994.lunch.mri.MRILunchMenuProvider;
+import de.philipp1994.lunch.oxford_cafe.OxfordCafeLunchMenuProvider;
 import de.philipp1994.lunch.pizzahaus.PizzaHausLunchMenuProvider;
 import de.philipp1994.lunchmenu.webservice.adapter.LocalDateAdapter;
 import de.philipp1994.lunchmenu.webservice.adapter.LocalDateTimeAdapter;
@@ -75,6 +76,7 @@ public class LunchMenuServlet extends HttpServlet {
 			new MRILunchMenuProvider(),
 			new KITLunchMenuProvider(),
 			new PizzaHausLunchMenuProvider(),
+			new OxfordCafeLunchMenuProvider()
 	};
 	
 	private BooleanPreference[] providerPreferences;
