@@ -119,7 +119,7 @@ public class OxfordCafeLunchMenuProvider implements ILunchMenuProvider {
 			for (int y = 0; y < image.getHeight(); y++) {
 				int rgba = image.getRGB(x, y);
 				Color col = new Color(rgba);
-				if((col.getRed() + col.getBlue() + col.getGreen())/3 > 70) {
+				if((col.getRed() + col.getBlue() + col.getGreen())/3 > 80) {
 					col = Color.BLACK;
 				}
 				else {
