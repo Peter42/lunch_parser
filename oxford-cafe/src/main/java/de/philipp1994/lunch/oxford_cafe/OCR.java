@@ -29,6 +29,7 @@ public class OCR {
 
 		chars.add('-');
 		chars.add(',');
+		chars.add('\'');
 	}
 	
 	public OCR(Font font, final double SIZE_FAKTOR) {
@@ -98,9 +99,7 @@ public class OCR {
 		}
 
 		data = data.replaceAll(",,", "\"");
-		data = data.replaceAll("i,", "\"");
-		data = data.replaceAll("li ", "\" ");
-		data = data.replaceAll("li$", "\"");
+		data = data.replaceAll("''", "\"");
 		
 		return data;
 	}
