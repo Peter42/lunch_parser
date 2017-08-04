@@ -44,7 +44,7 @@ function renderPref(pref) {
 		div.innerHTML = pref.name + " is not supported by the UI";
 	}
 	
-	content.appendChild(div);
+	document.getElementById("content").appendChild(div);
 }
 
 function updatedBoolean(key, value) {
