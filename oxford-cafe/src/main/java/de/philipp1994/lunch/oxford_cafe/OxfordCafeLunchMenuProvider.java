@@ -2,6 +2,8 @@ package de.philipp1994.lunch.oxford_cafe;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -88,7 +90,17 @@ public class OxfordCafeLunchMenuProvider implements ILunchMenuProvider {
 		BufferedImage inputImage = ImageIO.read(new URL(imgSrc).openStream());
 		
 		
-		final double SIZE_FAKTOR = inputImage.getHeight() / 2384.0;
+		double SIZE_FAKTOR = inputImage.getHeight() / 2384.0;
+		if(SIZE_FAKTOR < 1) {
+			System.out.println("Scaling up from SIZE_FAKTOR: " + SIZE_FAKTOR);
+			BufferedImage tmp = new BufferedImage((int)(inputImage.getWidth() / SIZE_FAKTOR), (int) (inputImage.getHeight() / SIZE_FAKTOR), inputImage.getType());
+			Graphics2D g = (Graphics2D) tmp.getGraphics();
+			g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+			g.drawImage(inputImage, 0, 0, tmp.getWidth(), tmp.getHeight(), null);
+			inputImage = tmp;
+			SIZE_FAKTOR = 1.0;
+		}
+		
 		System.out.println("SIZE_FAKTOR: " + SIZE_FAKTOR);
 		OCR stringOCR = new OCR(new Font("Abel", 0, 100), OCR.CHARS_STRING, SIZE_FAKTOR);
 		OCR priceOCR = new OCR(new Font("Abel", 0, 100), OCR.CHARS_PRICE, SIZE_FAKTOR);
