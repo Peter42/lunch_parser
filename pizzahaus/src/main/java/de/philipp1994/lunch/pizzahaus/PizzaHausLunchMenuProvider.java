@@ -25,7 +25,7 @@ public class PizzaHausLunchMenuProvider implements ILunchMenuProvider {
 		Map<String, String> languages = new HashMap<>();
 		languages.put("it","Italienisch (original)");
 		languages.put("de","Deutsch (übersetzt)");
-		PREF_LANGUAGE = new EnumPreference("Pizza Haus Sprache: ", PIZZA_HAUS_UUID + ".lang", languages, "de");
+		PREF_LANGUAGE = new EnumPreference("Pizza Haus Sprache", PIZZA_HAUS_UUID + ".lang", languages, "de");
 	}
 
 	@Override
