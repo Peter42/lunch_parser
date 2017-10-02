@@ -54,7 +54,11 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 		DataInputStream in = new DataInputStream(URL.toURL().openStream());
 
 		Document document = Jsoup.parse(in, null, "");
-		document.getElementsByClass("view-content").last().getElementsByClass("item-list").stream()
+		Element content = document.getElementsByClass("view-content").last();
+		if(content == null) {
+			throw LunchProviderException.LUNCH_MENU_NOT_AVAILABLE_YET;
+		}
+		content.getElementsByClass("item-list").stream()
 				.filter(node -> {
 					LocalDate nodeDate = LocalDate.parse(node.child(1).child(0).attr("content"), DateTimeFormatter.ISO_DATE_TIME);
 					return nodeDate.compareTo(date) == 0;
