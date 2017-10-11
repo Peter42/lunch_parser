@@ -126,15 +126,8 @@ public class LunchMenuServlet extends HttpServlet {
 		
 		IUserPreferences userPreferences = parsePreferences(request.getHeader("X-User-Preferences"));
 		
-		result.menuForDay = LocalDate.now();
+		result.menuForDay = determineRequestedDay(request);
 		result.generationTime = LocalDateTime.now();
-		
-		if(LocalDateTime.now().getHour() >= 15 ) {
-			result.menuForDay = result.menuForDay.plusDays(1);
-		}
-		if(result.menuForDay.getDayOfWeek().getValue() > DayOfWeek.FRIDAY.getValue()) {
-			result.menuForDay = result.menuForDay.plusDays( 1 + DayOfWeek.SUNDAY.getValue() - result.menuForDay.getDayOfWeek().getValue());
-		}
 		
 		for(int i = 0; i < PROVIDER.length; ++i ) {
 			if(!userPreferences.getValueOrDefault(providerPreferences[i]))
@@ -148,6 +141,29 @@ public class LunchMenuServlet extends HttpServlet {
 		
 		response.setContentType("application/json; charset=utf-8");
 		response.getWriter().write(gson.toJson(result));
+	}
+	
+	private LocalDate determineRequestedDay(HttpServletRequest request) {
+		String path = request.getPathInfo().substring(1);
+		LocalDate day = LocalDate.now();
+		
+		if(path == "today") {
+			return day;
+		}
+		
+		if(LocalDateTime.now().getHour() >= 15 ) {
+			day = day.plusDays(1);
+		}
+		if(path.startsWith("+")) {
+			day = day.plusDays(Integer.parseInt(path.substring(1)));
+		}
+		
+		// Skip weekend
+		if(day.getDayOfWeek().getValue() > DayOfWeek.FRIDAY.getValue()) {
+			day = day.plusDays( 1 + DayOfWeek.SUNDAY.getValue() - day.getDayOfWeek().getValue());
+		}
+		
+		return day;
 	}
 
 }
