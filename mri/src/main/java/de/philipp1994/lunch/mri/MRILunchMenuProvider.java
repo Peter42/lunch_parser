@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.commons.text.similarity.EditDistance;
-import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -28,8 +26,6 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 
 	private static final URI URL;
 	private static final Map<LocalDate, LunchMenu> cache = Cache.getSynchronizedCache(7);
-	private static final EditDistance<Integer> distance = new LevenshteinDistance();
-	private static final String SUPPE_AND_DESSERT = "Suppe & Dessert";
 
 	static {
 		URI t = null;
@@ -54,26 +50,21 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 		DataInputStream in = new DataInputStream(URL.toURL().openStream());
 
 		Document document = Jsoup.parse(in, null, "");
-		Element content = document.getElementsByClass("view-content").last();
-		if(content == null) {
-			throw LunchProviderException.LUNCH_MENU_NOT_AVAILABLE_YET;
-		}
-		content.getElementsByClass("item-list").stream()
-				.filter(node -> {
-					LocalDate nodeDate = LocalDate.parse(node.child(1).child(0).attr("content"), DateTimeFormatter.ISO_DATE_TIME);
-					return nodeDate.compareTo(date) == 0;
-				})
-				.forEach(node -> {
-					for (Element element : node.child(2).children()) {
-						if (distance.apply(SUPPE_AND_DESSERT, element.text().substring(0, SUPPE_AND_DESSERT.length()-1)) > 3) {
-							Element p = element.getElementsByTag("p").first();
-							menu.addLunchItem(new LunchMenuItem(p.toString()
-									.replaceAll("<su[bp]>[^<]*</su[bp]>", " ")
-									.replaceAll("</?p>", "")
-									.replaceAll(" +", " "), LunchMenuItem.PRICE_UNKOWN));
-						}
-					}
-				});
+		
+		document.select(".tagesplan-liste-user > div > div > div > div > ul").stream()
+			.filter(node -> {
+				LocalDate nodeDate = LocalDate.parse(node.previousElementSibling().child(0).attr("content"), DateTimeFormatter.ISO_DATE_TIME);
+				return nodeDate.compareTo(date) == 0;
+			})
+			.forEach(node -> {
+				for (Element element : node.child(0).getElementsByTag("p")) {
+					menu.addLunchItem(new LunchMenuItem(element.toString()
+						.replaceAll("<su[bp]>[^<]*</su[bp]>", " ")
+						.replaceAll("</?p>", "")
+						.replaceAll(" +", " "), LunchMenuItem.PRICE_UNKOWN));
+				}
+			}
+		);
 		
 		if(menu.getLunchItems().isEmpty()) {
 			throw LunchProviderException.LUNCH_MENU_NOT_AVAILABLE_YET;
