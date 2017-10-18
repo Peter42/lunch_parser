@@ -10,6 +10,8 @@ function loadData() {
 	xhttp.open("GET", "./api/v1/+" + offset, true);
 	xhttp.setRequestHeader("X-User-Preferences", btoa(JSON.stringify(localStorage)));
 	xhttp.send();
+	
+	btnPrevDay.style.display = offset < 1 ? "none" : "";
 }
 
 function unixToString(unix, includeTime) {
@@ -49,7 +51,7 @@ function render(data) {
 
 	div = document.getElementById("time");
 	time.innerHTML = "<b>Speiseplan für den "
-			+ unixToString(data.menuForDay, false) + "</b> Stand: "
+			+ unixToString(data.menuForDay, false) + "</b><br>Stand: "
 			+ unixToString(data.generationTime, true);
 }
 
@@ -121,7 +123,20 @@ function renderLunchItem(lunchitem, parentDiv, recycleDiv) {
 	spanPrice.innerHTML = lunchitem.price == -1.0 ? "Price unknown" : lunchitem.price.toFixed(2);
 }
 
-loadData();
+let btnPrevDay, btnNextDay;
+window.onload = () => {
+	btnPrevDay = document.getElementById("btnPrevDay");
+	btnPrevDay.onclick = () => {
+		offset--;
+		loadData();
+	};
+	btnNextDay = document.getElementById("btnNextDay");
+	btnNextDay.onclick = () => {
+		offset++;
+		loadData();
+	};
+	loadData();
+};
 
 // register service worker
 if ('serviceWorker' in navigator) {
