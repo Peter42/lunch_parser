@@ -1,12 +1,16 @@
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
-	if (this.readyState == 4 && this.status == 200) {
-		render(JSON.parse(this.responseText));
-	}
-};
-xhttp.open("GET", "./api/v1/", true);
-xhttp.setRequestHeader("X-User-Preferences", btoa(JSON.stringify(localStorage)));
-xhttp.send();
+var offset = 0;
+
+function loadData() {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			render(JSON.parse(this.responseText));
+		}
+	};
+	xhttp.open("GET", "./api/v1/+" + offset, true);
+	xhttp.setRequestHeader("X-User-Preferences", btoa(JSON.stringify(localStorage)));
+	xhttp.send();
+}
 
 function unixToString(unix, includeTime) {
 
@@ -31,8 +35,16 @@ function unixToString(unix, includeTime) {
 
 function render(data) {
 	var div = document.getElementById("content");
-	for (var i = 0; i < data.menus.length; ++i) {
-		renderCantine(data.menus[i], div);
+	
+	const max = Math.max(div.childElementCount, data.menus.length);
+
+	for (var i = 0; i < max; ++i) {
+		if(i < data.menus.length) {
+			renderCantine(data.menus[i], div, div.childNodes[i]);
+		}
+		else {
+			div.removeChild(div.childNodes[data.menus.length]);
+		}
 	}
 
 	div = document.getElementById("time");
@@ -41,45 +53,75 @@ function render(data) {
 			+ unixToString(data.generationTime, true);
 }
 
-function renderCantine(cantine, parentDiv) {
+function renderCantine(cantine, parentDiv, recycleDiv) {
 	if (cantine == null) {
 		return;
 	}
-	var div = document.createElement("div");
-	div.className = "cantine";
-	parentDiv.appendChild(div);
+	
+	let div, name;
+	if (recycleDiv !== undefined) {
+		div = recycleDiv;
+		name = div.getElementsByClassName("cantinename")[0];
+	}
+	else {
+		div = document.createElement("div");
+		div.className = "cantine";
+		parentDiv.appendChild(div);
 
-	var name = document.createElement("div");
-	name.className = "cantinename";
+		name = document.createElement("div");
+		name.className = "cantinename";
+		div.appendChild(name);
+	}
+	
 	name.innerText = cantine.name;
-	div.appendChild(name);
 
-	for (var i = 0; i < cantine.lunchItems.length; ++i) {
-		renderLunchItem(cantine.lunchItems[i], div);
+	const max = Math.max(div.childElementCount-1, cantine.lunchItems.length);
+	for (var i = 0; i < max; ++i) {
+		if(i < cantine.lunchItems.length) {
+			renderLunchItem(cantine.lunchItems[i], div, div.childNodes[i+1]);
+		}
+		else {
+			div.removeChild(div.childNodes[cantine.lunchItems.length]);
+		}
 	}
 }
 
-function renderLunchItem(lunchitem, parentDiv) {
-	var div = document.createElement("div");
-	div.className = "lunchitem";
+function renderLunchItem(lunchitem, parentDiv, recycleDiv) {
+	let div, spanName, spanContent, spanPrice;
+	if (recycleDiv !== undefined) {
+		div         = recycleDiv;
+		spanName    = div.getElementsByClassName("lunchitemname")[0];
+		spanContent = div.getElementsByClassName("lunchitemcomment")[0];
+		spanPrice   = div.getElementsByClassName("lunchitemprice")[0];
+	}
+	else {
+		div = document.createElement("div");
+		div.className = "lunchitem";
+		
+		spanName = document.createElement("span");
+		spanName.className = "lunchitemname";
+		spanName.innerHTML = lunchitem.itemName;
+		div.appendChild(spanName);
+		
+		spanComment = document.createElement("span");
+		spanComment.className = "lunchitemcomment";
+		spanComment.innerHTML = lunchitem.comment != null ? lunchitem.comment : "";
+		div.appendChild(spanComment);
+		
+		spanPrice = document.createElement("span");
+		spanPrice.className = "lunchitemprice";
+		spanPrice.innerHTML = lunchitem.price == -1.0 ? "Price unknown" : lunchitem.price.toFixed(2);
+		div.appendChild(spanPrice);
 
-	var spanName = document.createElement("span");
-	spanName.className = "lunchitemname";
+		parentDiv.appendChild(div);
+	}
+	
 	spanName.innerHTML = lunchitem.itemName;
-	div.appendChild(spanName);
-
-	var spanComment = document.createElement("span");
-	spanComment.className = "lunchitemcomment";
 	spanComment.innerHTML = lunchitem.comment != null ? lunchitem.comment : "";
-	div.appendChild(spanComment);
-
-	var spanPrice = document.createElement("span");
-	spanPrice.className = "lunchitemprice";
 	spanPrice.innerHTML = lunchitem.price == -1.0 ? "Price unknown" : lunchitem.price.toFixed(2);
-	div.appendChild(spanPrice);
-
-	parentDiv.appendChild(div);
 }
+
+loadData();
 
 // register service worker
 if ('serviceWorker' in navigator) {
