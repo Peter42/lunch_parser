@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.text.similarity.EditDistance;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -26,6 +28,9 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 
 	private static final URI URL;
 	private static final Map<LocalDate, LunchMenu> cache = Cache.getSynchronizedCache(7);
+	
+	private static final EditDistance<Integer> distance = new LevenshteinDistance();
+	private static final String SUPPE_AND_DESSERT = "Suppe & Dessert";
 
 	static {
 		URI t = null;
@@ -57,7 +62,10 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 				return nodeDate.compareTo(date) == 0;
 			})
 			.forEach(node -> {
-				for (Element element : node.child(0).getElementsByTag("p")) {
+				for (Element element : node.getElementsByTag("p")) {
+					if (distance.apply(SUPPE_AND_DESSERT, element.text().substring(0, SUPPE_AND_DESSERT.length()-1)) < 2) {
+						break;
+					}
 					menu.addLunchItem(new LunchMenuItem(element.toString()
 						.replaceAll("<su[bp]>[^<]*</su[bp]>", " ")
 						.replaceAll("</?p>", "")
