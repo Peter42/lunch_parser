@@ -66,7 +66,7 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 					if (isSuppeAndDessert(element.text())) {
 						break;
 					}
-					if(element.text().matches("^\\s*$")) {
+					if(element.text().matches("^(\\s|\\h|\\v)*$")) {
 						continue;
 					}
 					menu.addLunchItem(new LunchMenuItem(element.toString()
