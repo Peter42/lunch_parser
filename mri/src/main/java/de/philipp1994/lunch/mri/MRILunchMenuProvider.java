@@ -63,7 +63,7 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 			})
 			.forEach(node -> {
 				for (Element element : node.getElementsByTag("p")) {
-					if (distance.apply(SUPPE_AND_DESSERT, element.text().substring(0, SUPPE_AND_DESSERT.length()-1)) < 2) {
+					if (isSuppeAndDessert(element.text())) {
 						break;
 					}
 					menu.addLunchItem(new LunchMenuItem(element.toString()
@@ -81,6 +81,11 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 		cache.put(date, menu);
 		
 		return Collections.singletonList(menu);
+	}
+	
+	private boolean isSuppeAndDessert(String text) {
+		final int end = Math.min(text.length(), SUPPE_AND_DESSERT.length()) - 1;
+		return distance.apply(SUPPE_AND_DESSERT, text.substring(0, end)) < 2;
 	}
 
 	@Override
