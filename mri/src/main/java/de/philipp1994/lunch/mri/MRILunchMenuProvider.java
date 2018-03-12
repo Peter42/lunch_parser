@@ -82,9 +82,10 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 			})
 			.map(element -> element.toString()
 					.replaceAll("<su[bp]>[^<]*</su[bp]>", " ")
-					.replaceAll("</?p>", "")
-					.replaceAll("</?strong>", "")
+					.replaceAll("</?[A-z]*>", "")
+					.replaceAll("&nbsp;", " ")
 					.replaceAll(" +", " ")
+					.trim()
 			).collect(Collectors.toList());
 		
 		for(int i = 0; i < menuItemNames.size(); ++i) {
