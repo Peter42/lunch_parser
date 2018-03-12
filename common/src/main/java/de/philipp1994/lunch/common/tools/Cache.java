@@ -4,6 +4,11 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * @author Philipp Stehle
+ * @deprecated Use  {@link MaxAgeCache}
+ */
+@Deprecated
 public class Cache<K, V> extends LinkedHashMap<K, V> {
 	
 	
