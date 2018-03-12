@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.apache.commons.text.similarity.EditDistance;
 import org.apache.commons.text.similarity.LevenshteinDistance;
@@ -56,27 +58,47 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 
 		Document document = Jsoup.parse(in, null, "");
 		
-		document.select(".tagesplan-liste-user > div > div > div > div > ul").stream()
+		List<String> menuItemNames = document.select(".tagesplan-liste-user > div > div > div > div > ul").stream()
 			.filter(node -> {
 				LocalDate nodeDate = LocalDate.parse(node.previousElementSibling().child(0).attr("content"), DateTimeFormatter.ISO_DATE_TIME);
 				return nodeDate.compareTo(date) == 0;
 			})
-			.forEach(node -> {
-				for (Element element : node.getElementsByTag("p")) {
-					if (isSuppeAndDessert(element.text())) {
-						break;
+			.flatMap(node -> node.getElementsByTag("p").stream())
+			.filter(element -> !element.text().matches("^(\\s|\\h|\\v)*$"))
+			.sequential()
+			.filter(new Predicate<Element>() {
+				boolean found = false;
+				@Override
+				public boolean test(Element element) {
+					if(found) {
+						return false;
 					}
-					if(element.text().matches("^(\\s|\\h|\\v)*$")) {
-						continue;
-					}
-					menu.addLunchItem(new LunchMenuItem(element.toString()
-						.replaceAll("<su[bp]>[^<]*</su[bp]>", " ")
-						.replaceAll("</?p>", "")
-						.replaceAll("</?strong>", "")
-						.replaceAll(" +", " "), LunchMenuItem.PRICE_UNKOWN));
+					found = isSuppeAndDessert(element.text());
+					return !found;
 				}
+			})
+			.map(element -> element.toString()
+					.replaceAll("<su[bp]>[^<]*</su[bp]>", " ")
+					.replaceAll("</?p>", "")
+					.replaceAll("</?strong>", "")
+					.replaceAll(" +", " ")
+			).collect(Collectors.toList());
+		
+		for(int i = 0; i < menuItemNames.size(); ++i) {
+			double price = LunchMenuItem.PRICE_UNKOWN;
+			String name = menuItemNames.get(i);
+			
+			switch (i) {
+			case 0:
+				price = 4.90;
+				break;
+			case 1:
+				price = 5.40;
+				break;
 			}
-		);
+			
+			menu.addLunchItem(new LunchMenuItem(name, price));
+		}
 		
 		if(menu.getLunchItems().isEmpty()) {
 			throw LunchProviderException.LUNCH_MENU_NOT_AVAILABLE_YET;
