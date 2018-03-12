@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.text.similarity.EditDistance;
@@ -33,6 +35,7 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 	
 	private static final EditDistance<Integer> distance = new LevenshteinDistance();
 	private static final String SUPPE_AND_DESSERT = "Suppe & Dessert";
+	private static final Pattern PRICE_PATTERN = Pattern.compile(" [0-9]€$");
 
 	static {
 		URI t = null;
@@ -97,7 +100,13 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 				break;
 			}
 			
-			menu.addLunchItem(new LunchMenuItem(name, price));
+			Matcher priceMatcher = PRICE_PATTERN.matcher(name);
+			if(priceMatcher.find()) {
+				price = name.charAt(priceMatcher.start() + 1) - '0';
+				name = name.substring(0, priceMatcher.start());
+			}
+			
+			menu.addLunchItem(new LunchMenuItem(name.trim(), price));
 		}
 		
 		if(menu.getLunchItems().isEmpty()) {
