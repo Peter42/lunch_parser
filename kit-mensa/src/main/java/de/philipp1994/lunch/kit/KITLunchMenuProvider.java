@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
@@ -29,12 +30,20 @@ import de.philipp1994.lunch.common.LunchProviderException;
 import de.philipp1994.lunch.common.prefs.EnumPreference;
 import de.philipp1994.lunch.common.prefs.IUserPreferences;
 import de.philipp1994.lunch.common.prefs.Preference;
-import de.philipp1994.lunch.common.tools.Cache;
+import de.philipp1994.lunch.common.tools.MaxAgeCache;
 import de.philipp1994.lunch.common.tools.Utils;
 
 public class KITLunchMenuProvider implements ILunchMenuProvider {
 
-	private static final Map<LocalDate, Map<String, List<LunchMenuItem>>> cache = Cache.getSynchronizedCache(7);
+	private final MaxAgeCache<LocalDate, Map<String, List<LunchMenuItem>>> cache = new MaxAgeCache<>(30L, TimeUnit.MINUTES, t -> {
+		try {
+			return getMenuForLines(t);
+		} catch (IOException | LunchProviderException e) {
+			e.printStackTrace();
+			return null;
+		}
+	});
+	
 	private static final String MENSA_NAME = "KIT Mensa";
 	
 	private static final EnumPreference PREF_DISPLAY_MODE;
@@ -75,10 +84,6 @@ public class KITLunchMenuProvider implements ILunchMenuProvider {
 	}
 	
 	private Map<String, List<LunchMenuItem>> getMenuForLines(final LocalDate date) throws IOException, LunchProviderException {
-		if(cache.containsKey(date)){
-			return cache.get(date);
-		}
-
 		try {
 			Map<String, List<LunchMenuItem>> menu;
 			
@@ -119,9 +124,7 @@ public class KITLunchMenuProvider implements ILunchMenuProvider {
 				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 			}));
-			
-			cache.put(date, menu);
-			
+
 			return menu;
 		}
 		catch(Exception e) {
@@ -149,7 +152,12 @@ public class KITLunchMenuProvider implements ILunchMenuProvider {
 		
 		List<LunchMenu> lunchMenus = new LinkedList<>();
 		
-		getMenuForLines(date).entrySet().stream()
+		Map<String, List<LunchMenuItem>> items = cache.get(date);
+		if(items == null) {
+			throw LunchProviderException.LUNCH_MENU_NOT_AVAILABLE_YET;
+		}
+		
+		items.entrySet().stream()
 		.collect(Collectors.groupingBy(classifier, Collectors.mapping(Entry::getValue, Collectors.toList())))
 		.entrySet().stream().collect(Collectors.toMap( e -> e.getKey(),
 				e -> {
@@ -189,8 +197,6 @@ public class KITLunchMenuProvider implements ILunchMenuProvider {
 		if(menu.isEmpty()) {
 			throw LunchProviderException.LUNCH_MENU_NOT_AVAILABLE_YET;
 		}
-		
-		cache.put(date, menu);
 		
 		return menu;
 	}
