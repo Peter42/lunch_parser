@@ -72,6 +72,7 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 					menu.addLunchItem(new LunchMenuItem(element.toString()
 						.replaceAll("<su[bp]>[^<]*</su[bp]>", " ")
 						.replaceAll("</?p>", "")
+						.replaceAll("</?strong>", "")
 						.replaceAll(" +", " "), LunchMenuItem.PRICE_UNKOWN));
 				}
 			}
