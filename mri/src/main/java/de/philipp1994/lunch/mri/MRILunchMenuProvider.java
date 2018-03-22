@@ -122,7 +122,7 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 	}
 	
 	private boolean isSuppeAndDessert(String text) {
-		final int end = Math.min(text.length(), SUPPE_AND_DESSERT.length()) - 1;
+		final int end = Math.min(text.length(), SUPPE_AND_DESSERT.length());
 		return distance.apply(SUPPE_AND_DESSERT, text.substring(0, end)) < 2;
 	}
 
