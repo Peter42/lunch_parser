@@ -33,7 +33,7 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 	private static final URI URL;
 	private static final EditDistance<Integer> distance = new LevenshteinDistance();
 	private static final String SUPPE_AND_DESSERT = "Suppe & Dessert";
-	private static final Pattern PRICE_PATTERN = Pattern.compile(" [0-9]€$");
+	private static final Pattern PRICE_PATTERN = Pattern.compile("([0-9,.]+) *€$");
 
 	private final MaxAgeCache<LocalDate, LunchMenu> cache = new MaxAgeCache<>(30, TimeUnit.MINUTES, this::fetchMenu);
 
@@ -102,7 +102,7 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 			
 			Matcher priceMatcher = PRICE_PATTERN.matcher(name);
 			if(priceMatcher.find()) {
-				price = name.charAt(priceMatcher.start() + 1) - '0';
+				price = Double.parseDouble(priceMatcher.group(1).replace(',', '.'));
 				name = name.substring(0, priceMatcher.start());
 			}
 			
