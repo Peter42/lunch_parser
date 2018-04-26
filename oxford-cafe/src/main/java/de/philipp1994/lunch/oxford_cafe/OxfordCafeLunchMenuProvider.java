@@ -59,7 +59,8 @@ public class OxfordCafeLunchMenuProvider implements ILunchMenuProvider {
 		.flatMap(n -> n.getElementsByClass("fooditem").stream())
 		.map(n -> {
 			double price = Double.parseDouble(n.getElementsByClass("fooditem_price").text().split(" ")[0].replace(',', '.'));
-			return new LunchMenuItem(n.getElementsByClass("fooditem_title").text(), price);
+			String name = ItemNameNormalizer.normalize(n.getElementsByClass("fooditem_title").text());
+			return new LunchMenuItem(name, price);
 		})
 		.forEach(menu::addLunchItem);
 
