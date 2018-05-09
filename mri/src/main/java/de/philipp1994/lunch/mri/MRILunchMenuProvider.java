@@ -40,7 +40,7 @@ public class MRILunchMenuProvider implements ILunchMenuProvider {
 	static {
 		URI t = null;
 		try {
-			t = new URI("http://www.casinocatering.de/speiseplan/max-rubner-institut");
+			t = new URI("https://www.casinocatering.de/speiseplan/max-rubner-institut");
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		} finally {
