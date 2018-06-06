@@ -45,8 +45,8 @@ body {
 	margin-bottom: .5rem;
 }
 
-#forkongithub a {
-	background: #000;
+#forkongitlab a {
+	background: #fc6d27;
 	color: #fff;
 	text-decoration: none;
 	font-family: arial, sans-serif;
@@ -59,12 +59,12 @@ body {
 	transition: 0.5s;
 }
 
-#forkongithub a:hover {
+#forkongitlab a:hover {
 	background: #c11;
 	color: #fff;
 }
 
-#forkongithub a::before, #forkongithub a::after {
+#forkongitlab a::before, #forkongitlab a::after {
 	content: "";
 	width: 100%;
 	display: block;
@@ -75,13 +75,13 @@ body {
 	background: #fff;
 }
 
-#forkongithub a::after {
+#forkongitlab a::after {
 	bottom: 1px;
 	top: auto;
 }
 
 @media screen and (min-width:800px) {
-	#forkongithub {
+	#forkongitlab {
 		position: fixed;
 		display: block;
 		top: 0;
@@ -91,7 +91,7 @@ body {
 		height: 200px;
 		z-index: 9999;
 	}
-	#forkongithub a {
+	#forkongitlab a {
 		width: 200px;
 		position: absolute;
 		top: 60px;
